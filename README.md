@@ -50,7 +50,7 @@ API(apiKey, apiSecret, testnet);
 #### WebSocket
 
 ```js
-WebSocket(onMessage, (onOpen = null), (onClose = null), (onError = null));
+WebSocket(onMessage, onOpen, onClose, onError);
 ```
 
 -   `onMessage` - On message callback
