@@ -1,6 +1,6 @@
-const nodeWebSocket = require("ws");
+const NodeWebSocket = require("ws");
 
-const CONNECTION_URI = "wss://ws.bitmex.com/realtime"
+const CONNECTION_URI = "wss://ws.bitmex.com/realtime";
 
 const __onOpen = event => {
     console.log("Connected to Bitmex Realtime API");
@@ -22,11 +22,7 @@ class WebSocket {
     _onClose;
     _onError;
 
-    constructor(
-        onMessage,
-        onOpen = null,
-        onClose = null,
-        onError = null) {
+    constructor(onMessage, onOpen = null, onClose = null, onError = null) {
         if (!onMessage) throw new Error("onMessage argument is required");
 
         this._onMessage = onMessage;
@@ -37,7 +33,7 @@ class WebSocket {
 
     async init() {
         return new Promise(resolve => {
-            this._ws = new nodeWebSocket(CONNECTION_URI);
+            this._ws = new NodeWebSocket(CONNECTION_URI);
 
             this._ws.onopen = event => {
                 this._isOpen = true;
@@ -58,7 +54,7 @@ class WebSocket {
 
         const op = JSON.stringify({ op: "subscribe", args: args });
         this._ws.send(op);
-        
+
         return true;
     }
 
@@ -67,7 +63,7 @@ class WebSocket {
 
         const op = JSON.stringify({ op: "unsubscribe", args: args });
         this._ws.send(op);
-        
+
         return true;
     }
 
