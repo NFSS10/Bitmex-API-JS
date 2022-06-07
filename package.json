@@ -1,0 +1,31 @@
+{
+    "name": "@nfss10/bitmex-api",
+    "version": "0.1.0",
+    "description": "Bitmex API",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest",
+        "lint": "eslint .",
+        "lint-fix": "eslint . --fix",
+        "prettier": "prettier --write \"**/*.+(js|jsx|json|css|md)\"",
+        "pretty": "npm run prettier && npm run lint-fix"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/NFSS10/Bitmex-API-JS"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
+    },
+    "keywords": [
+        "Bitmex",
+        "API",
+        "WebSocket"
+    ],
+    "author": "NFSS10",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "node-fetch": "2"
+    },
+    "devDependencies": {}
+}
