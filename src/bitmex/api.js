@@ -135,9 +135,9 @@ class API {
 
     async reduceOnlyOrder(symbol, side, orderQty, limitPrice, clOrdID = null) {
         const body = {
-            side: side,
             ordType: "Limit",
             execInst: "ReduceOnly",
+            side: side,
             symbol: symbol,
             orderQty: orderQty,
             price: limitPrice,
@@ -147,9 +147,9 @@ class API {
         return result;
     }
 
-    async setLeverage(leverage = 1) {
+    async setLeverage(symbol, leverage = 1) {
         const body = {
-            symbol: "XBTUSD",
+            symbol: symbol,
             leverage: leverage
         };
         const result = await __post(this._baseUrl, "/position/leverage", body, this._apiSecret, this._apiKey);
@@ -166,10 +166,10 @@ class API {
     async getHistoricalData(symbol, interval = "1m", startTime = null, endTime = null) {
         const result = [];
         const params = {
-            symbol: symbol,
-            binSize: interval,
             count: 1000,
             start: 0,
+            symbol: symbol,
+            binSize: interval,
             startTime: startTime,
             endTime: endTime
         };
