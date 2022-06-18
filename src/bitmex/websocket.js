@@ -63,9 +63,8 @@ class WebSocket {
             .update(requestType + routePath + expires)
             .digest("hex");
 
-
         const op = JSON.stringify({ op: "authKeyExpires", args: [apiKey, expires, signature] });
-        this._ws.send(op)
+        this._ws.send(op);
     }
 
     subscribe(args = []) {
