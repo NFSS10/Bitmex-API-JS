@@ -1,6 +1,5 @@
 const NodeWebSocket = require("ws");
-
-const CONNECTION_URI = "wss://ws.bitmex.com/realtime";
+const crypto = require("crypto");
 
 const __onOpen = event => {
     console.log("Connected to Bitmex Realtime API");
@@ -15,6 +14,7 @@ const __onError = event => {
 };
 
 class WebSocket {
+    _connectionURI;
     _ws;
     _isOpen;
     _onMessage;
@@ -31,9 +31,10 @@ class WebSocket {
         this._onError = onError || __onError;
     }
 
-    async init() {
+    async init(testnet = false) {
         return new Promise(resolve => {
-            this._ws = new NodeWebSocket(CONNECTION_URI);
+            this._connectionURI = testnet ? "wss://ws.testnet.bitmex.com/realtime" : "wss://ws.bitmex.com/realtime";
+            this._ws = new NodeWebSocket(this._connectionURI);
 
             this._ws.onopen = event => {
                 this._isOpen = true;
@@ -47,6 +48,24 @@ class WebSocket {
             };
             this._ws.onerror = event => this._onError(event);
         });
+    }
+
+    async auth(apiKey = null, apiSecret = null) {
+        if (!apiKey) throw new Error("apiKey argument is required");
+        if (!apiSecret) throw new Error("apiSecret argument is required");
+        if (!this._isOpen) return false;
+
+        const requestType = "GET";
+        const routePath = "/realtime";
+        const expires = Math.round(Date.now() / 1000) + 60; // 1 min. from now
+        const signature = crypto
+            .createHmac("sha256", apiSecret)
+            .update(requestType + routePath + expires)
+            .digest("hex");
+
+
+        const op = JSON.stringify({ op: "authKeyExpires", args: [apiKey, expires, signature] });
+        this._ws.send(op)
     }
 
     subscribe(args = []) {
