@@ -87,6 +87,9 @@ class WebSocket {
 
     close() {
         this._ws.close();
+        process.nextTick(() => {
+            if ([this._ws.OPEN, this._ws.CLOSING].includes(this._ws.readyState)) this._ws.terminate();
+        });
     }
 }
 
