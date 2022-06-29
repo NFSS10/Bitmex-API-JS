@@ -54,6 +54,32 @@ const __post = async (baseUrl, route, body, apiSecret, apiKey) => {
     return json;
 };
 
+const __put = async (baseUrl, route, body, apiSecret, apiKey) => {
+    const requestType = "PUT";
+    const routePath = `${API_PATH}${route}`;
+    const bodyStr = JSON.stringify(body);
+
+    const expires = Math.round(Date.now() / 1000) + 60; // 1 min. from now
+    const signature = crypto
+        .createHmac("sha256", apiSecret)
+        .update(requestType + routePath + expires + bodyStr)
+        .digest("hex");
+
+    const url = `${baseUrl}${routePath}`;
+    const response = await fetch(url, {
+        method: requestType,
+        body: bodyStr,
+        headers: {
+            "Content-Type": "application/json",
+            "api-key": apiKey,
+            "api-expires": expires,
+            "api-signature": signature
+        }
+    });
+    const json = await response.json();
+    return json;
+};
+
 const __delete = async (baseUrl, route, body, apiSecret, apiKey) => {
     const requestType = "DELETE";
     const routePath = `${API_PATH}${route}`;
@@ -105,6 +131,12 @@ class API {
         const response = await fetch(url);
         const json = await response.json();
         return json;
+    }
+    
+    async updateOrder(orderId, body = {}) {
+        body.orderID = orderId;
+        const result = await __put(this._baseUrl, "/order", body, this._apiSecret, this._apiKey);
+        return result;
     }
 
     async listOrdersOpen(symbol) {
