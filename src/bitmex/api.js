@@ -252,28 +252,37 @@ class API {
         return result;
     }
 
-    async getHistoricalData(symbol, interval = "1m", startTime = null, endTime = null) {
-        const result = [];
+    async getHistoricalData(symbol, interval = "1m", start = 0, count = 1000, startTime = null, endTime = null) {
+        if (count > 1000) throw new Error("'count' cannot be greater than 1000");
         const params = {
-            count: 1000,
-            start: 0,
+            count: count,
+            start: start,
             symbol: symbol,
             binSize: interval,
             startTime: startTime,
             endTime: endTime
         };
+        const result = await __get(this._baseUrl, "/trade/bucketed", params, this._apiSecret, this._apiKey);
+        return result;
+    }
 
+    async getAllHistoricalData(symbol, interval = "1m", startTime = null, endTime = null) {
+        const result = [];
+        
+        let start = 0;
+        let count = 1000;
         let isFinished = false;
         while (!isFinished) {
             const promises = [];
 
             // the Bitmex request limit is 120 requests per minute, so it
-            // tries avoid that limit by doing 115 requests per minute
+            // tries avoid that limit by first waiting a minute and then
+            // keep doing 115 requests per minute util it has all the data
             await __sleep(60000);
             for (let i = 0; i < 115; i++) {
-                const promise = __get(this._baseUrl, "/trade/bucketed", params, this._apiSecret, this._apiKey);
+                const promise = this.getHistoricalData(symbol, interval, start, count, startTime, endTime);
                 promises.push(promise);
-                params.start = params.start + 1000;
+                start += 1000;
             }
             const data = await Promise.all(promises);
 
