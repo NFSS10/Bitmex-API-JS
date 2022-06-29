@@ -132,7 +132,7 @@ class API {
         const json = await response.json();
         return json;
     }
-    
+
     async updateOrder(orderId, body = {}) {
         body.orderID = orderId;
         const result = await __put(this._baseUrl, "/order", body, this._apiSecret, this._apiKey);
@@ -268,9 +268,9 @@ class API {
 
     async getAllHistoricalData(symbol, interval = "1m", startTime = null, endTime = null) {
         const result = [];
-        
+
         let start = 0;
-        let count = 1000;
+        const count = 1000;
         let isFinished = false;
         while (!isFinished) {
             const promises = [];
