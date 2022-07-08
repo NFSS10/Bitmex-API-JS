@@ -21,6 +21,7 @@ class WebSocket {
     _onOpen;
     _onClose;
     _onError;
+    _keepAliveInterval;
 
     constructor(onMessage, onOpen = null, onClose = null, onError = null) {
         if (!onMessage) throw new Error("onMessage argument is required");
@@ -85,7 +86,20 @@ class WebSocket {
         return true;
     }
 
+    keepAlive() {
+        if (!this._isOpen) return false;
+
+        this._ws.send("ping");
+        clearInterval(this._keepAliveInterval);
+        this._keepAliveInterval = setInterval(() => this._ws.send("ping"), 2700000); // 45 min.
+
+        return true;
+    }
+
     close() {
+        clearInterval(this._keepAliveInterval);
+        this._keepAliveInterval = null;
+
         this._ws.close();
         process.nextTick(() => {
             if ([this._ws.OPEN, this._ws.CLOSING].includes(this._ws.readyState)) this._ws.terminate();
