@@ -1,6 +1,6 @@
 {
     "name": "@nfss10/bitmex-api",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Bitmex API",
     "main": "index.js",
     "scripts": {
