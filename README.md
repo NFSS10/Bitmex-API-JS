@@ -44,7 +44,7 @@ API(apiKey, apiSecret, testnet);
 ```
 
 -   `apiKey` - API Key
--   `apiSecret` - API Secret 1
+-   `apiSecret` - API Secret
 -   `testnet` - (optional) Dictates if runs on the testnet environment. Default is `false`
 
 #### WebSocket
